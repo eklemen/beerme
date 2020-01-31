@@ -12,6 +12,8 @@
                 <b-form-input v-model="password" placeholder="Password" type="password" class="mb-3" />
                 <b-button block type="submit" variant="outline-info">Login</b-button>
             </b-form>
+            <h3 v-if="isNewUser">Welcome</h3>
+            <h3 v-else>Welcome back {{ usernameStored }}</h3>
         </b-col>
         <b-col cols="12" class="mt-4">
             <span>New Here?</span>
@@ -21,6 +23,8 @@
 </template>
 
 <script>
+  import {mapState, mapMutations, mapActions, mapGetters} from "vuex";
+
   export default {
     data() {
       return {
@@ -28,8 +32,25 @@
         password: ''
       }
     },
+    computed: {
+      ...mapState([
+        'usernameStored'
+      ]),
+      ...mapGetters([
+        'isNewUser'
+      ])
+    },
     methods: {
+      ...mapMutations([
+        'SAVE_USERNAME'
+      ]),
+      ...mapActions([
+        'authenticateUser'
+      ]),
       submitLogin() {
+        console.log(this.username);
+        this.SAVE_USERNAME(this.username);
+        this.authenticateUser();
         this.$router.push('/dashboard');
       }
     }
